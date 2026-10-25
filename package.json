@@ -1,6 +1,6 @@
 {
   "name": "slopfix",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Find and fix AI writing tells (em dashes, \"it's not X, it's Y\", delve, chatbot leftovers) in English and French. Zero dependencies. CLI, library, GitHub Action.",
   "type": "module",
   "main": "./src/index.js",

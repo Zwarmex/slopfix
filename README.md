@@ -151,7 +151,7 @@ jobs:
 ```yaml
 repos:
   - repo: https://github.com/Zwarmex/slopfix
-    rev: v0.1.0
+    rev: v0.1.1
     hooks:
       - id: slopfix
 ```
