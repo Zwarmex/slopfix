@@ -57,7 +57,8 @@ export function phraseRule({ id, lang, category, severity, message, phrases, dro
           const next = m[3] || '';
           const opensSentence = isUpper(matched[0]);
           const fixedNext = opensSentence ? next.toUpperCase() : next;
-          yield { index: m.index, length: m[0].length, fix: fixedNext, fixLabel: '(remove)', quote: matched };
+          // Report only the phrase, but let the fix also re-case the letter that follows it.
+          yield { index: m.index, length: matched.length, fixLength: m[0].length, fix: fixedNext, fixLabel: '(remove)', quote: matched };
         } else {
           const fix = entry && entry.replacement !== undefined ? matchCase(entry.replacement, matched) : undefined;
           yield { index: m.index, length: matched.length, fix, quote: matched };

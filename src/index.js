@@ -126,7 +126,7 @@ export function lint(text, options) {
         fix:
           hit.fix === undefined || hit.fix === null
             ? undefined
-            : { range: [hit.index, hit.index + hit.length], text: hit.fix, label: hit.fixLabel ?? (hit.fix === '' ? '(remove)' : undefined) },
+            : { range: [hit.index, hit.index + (hit.fixLength ?? hit.length)], text: hit.fix, label: hit.fixLabel ?? (hit.fix === '' ? '(remove)' : undefined) },
       });
     }
   }

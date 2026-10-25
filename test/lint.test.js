@@ -63,6 +63,12 @@ test('english: drops filler openers and re-capitalizes', () => {
   assert.equal(fix('In conclusion, ship it.').output, 'Ship it.');
 });
 
+test('a dropped phrase reports only the phrase, the fix also re-cases the next letter', () => {
+  const [issue] = lint("In conclusion, it's done.").issues;
+  assert.equal(issue.length, 'In conclusion,'.length);
+  assert.deepEqual(issue.fix.range, [0, 'In conclusion, i'.length]);
+});
+
 test('english: replaces overused vocabulary and keeps case', () => {
   assert.equal(fix('Delve into the logs, then utilize the cache.').output, 'Dig into the logs, then use the cache.');
 });

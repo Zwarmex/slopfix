@@ -55,6 +55,8 @@ export interface Hit {
   length: number;
   fix?: string | null;
   fixLabel?: string;
+  /** Length of the text the fix replaces, when it differs from the reported length. */
+  fixLength?: number;
   message?: string;
   quote?: string;
 }

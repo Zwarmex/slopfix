@@ -2,6 +2,12 @@
 
 All notable changes to this project are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Filler openers removed by `--fix` (for example `In conclusion,`) no longer report the first letter of the next word as part of the tell. The fix still re-capitalizes that letter.
+
 ## [0.1.0] - 2026-10-25
 
 First public release.
@@ -17,4 +23,5 @@ First public release.
 - Config file `.slopfixrc.json` with rule levels, banned phrases, ignore globs and dash replacement.
 - GitHub Action with pull request annotations, pre-commit hook, agent skill and browser playground.
 
+[Unreleased]: https://github.com/Zwarmex/slopfix/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/Zwarmex/slopfix/releases/tag/v0.1.0
