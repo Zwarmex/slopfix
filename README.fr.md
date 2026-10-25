@@ -8,6 +8,8 @@ Un linter sans dépendance pour les tics d'écriture IA : tirets cadratins, `ce 
 
 [Essayer dans le navigateur](https://zwarmex.github.io/slopfix/) · [English](README.md)
 
+<img src="assets/demo.gif" alt="slopfix surligne 11 tics d'écriture IA, en corrige 9 avec --fix, et le score passe de 96 à 0 après une courte réécriture" width="800">
+
 </div>
 
 ```bash

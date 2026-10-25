@@ -13,6 +13,8 @@ A zero dependency linter for AI writing tells: em dashes, `it's not X, it's Y`, 
 
 [Try it in your browser](https://zwarmex.github.io/slopfix/) · [Français](README.fr.md)
 
+<img src="assets/demo.gif" alt="slopfix highlights 11 AI writing tells, fixes 9 of them with --fix, and the score drops from 96 to 0 after a short rewrite" width="800">
+
 </div>
 
 ```bash
