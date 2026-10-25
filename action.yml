@@ -1,0 +1,41 @@
+name: 'slopfix'
+description: 'Find AI writing tells (em dashes, "it is not X, it is Y", delve, chatbot leftovers) in your docs and annotate the pull request.'
+author: 'Zwarmex'
+branding:
+  icon: 'feather'
+  color: 'orange'
+
+inputs:
+  paths:
+    description: 'Files or folders to check, separated by spaces.'
+    required: false
+    default: '.'
+  lang:
+    description: 'en, fr, auto or all.'
+    required: false
+    default: 'auto'
+  max-score:
+    description: 'Fail only when a file scores above this (0 to 100). Leave empty to fail on any error or warning.'
+    required: false
+    default: ''
+  quiet:
+    description: 'Hide info level tells.'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run slopfix
+      shell: bash
+      env:
+        SLOPFIX_PATHS: ${{ inputs.paths }}
+        SLOPFIX_LANG: ${{ inputs.lang }}
+        SLOPFIX_MAX_SCORE: ${{ inputs.max-score }}
+        SLOPFIX_QUIET: ${{ inputs.quiet }}
+      run: |
+        args=(--format github --lang "$SLOPFIX_LANG")
+        if [ -n "$SLOPFIX_MAX_SCORE" ]; then args+=(--max-score "$SLOPFIX_MAX_SCORE"); fi
+        if [ "$SLOPFIX_QUIET" = "true" ]; then args+=(--quiet); fi
+        read -r -a paths <<< "$SLOPFIX_PATHS"
+        node "$GITHUB_ACTION_PATH/bin/slopfix.js" "${paths[@]}" "${args[@]}"

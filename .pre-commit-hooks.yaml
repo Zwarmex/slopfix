@@ -1,0 +1,7 @@
+- id: slopfix
+  name: slopfix
+  description: Find AI writing tells in Markdown and text files.
+  entry: slopfix
+  language: node
+  types_or: [markdown, text]
+  args: [--quiet]

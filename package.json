@@ -1,0 +1,58 @@
+{
+  "name": "slopfix",
+  "version": "0.1.0",
+  "description": "Find and fix AI writing tells (em dashes, \"it's not X, it's Y\", delve, chatbot leftovers) in English and French. Zero dependencies. CLI, library, GitHub Action.",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "slopfix": "bin/slopfix.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "lint:docs": "node bin/slopfix.js README.md README.fr.md CONTRIBUTING.md",
+    "demo": "node examples/make-examples.js && node bin/slopfix.js examples"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "chatgpt",
+    "claude",
+    "slop",
+    "ai-slop",
+    "ai-writing",
+    "humanizer",
+    "linter",
+    "prose",
+    "writing",
+    "markdown",
+    "em-dash",
+    "cli",
+    "github-action"
+  ],
+  "author": "Zwarmex",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zwarmex/slopfix.git"
+  },
+  "homepage": "https://zwarmex.github.io/slopfix/",
+  "bugs": {
+    "url": "https://github.com/Zwarmex/slopfix/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

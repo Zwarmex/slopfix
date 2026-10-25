@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>slopfix playground</title>
+<meta name="description" content="Paste any text and see the AI writing tells: em dashes, 'it's not X, it's Y', delve, chatbot leftovers. English and French. Runs in your browser, nothing is sent anywhere.">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --panel: #ffffff;
+    --text: #1d1c1a;
+    --muted: #6b6760;
+    --border: #e6e2da;
+    --accent: #e8590c;
+    --error: #d6336c;
+    --warning: #e8590c;
+    --info: #1c7ed6;
+    --error-bg: #ffe3ec;
+    --warning-bg: #ffe8d6;
+    --info-bg: #e3f0ff;
+    --ok: #2b8a3e;
+    --radius: 12px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141312;
+      --panel: #1c1b19;
+      --text: #ece9e3;
+      --muted: #9a958c;
+      --border: #2e2c29;
+      --error-bg: #4a1d2c;
+      --warning-bg: #4a2a12;
+      --info-bg: #13304f;
+      --ok: #69db7c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 64px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 20px; margin-bottom: 8px; }
+  h1 { font-size: 28px; margin: 0; letter-spacing: -0.02em; }
+  h1 span { color: var(--accent); }
+  .tagline { color: var(--muted); margin: 0 0 24px; max-width: 720px; }
+  header a { color: var(--muted); font-size: 14px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+  button, select {
+    font: inherit; font-size: 14px;
+    border: 1px solid var(--border); background: var(--panel); color: var(--text);
+    padding: 7px 14px; border-radius: 8px; cursor: pointer;
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button:hover { filter: brightness(0.97); }
+  .spacer { flex: 1; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+  .panel h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  textarea {
+    width: 100%; min-height: 380px; flex: 1; resize: vertical;
+    border: 0; outline: none; padding: 14px; background: transparent; color: var(--text);
+    font: 15px/1.6 var(--mono);
+  }
+  #preview { padding: 14px; white-space: pre-wrap; word-wrap: break-word; font: 15px/1.6 var(--mono); min-height: 380px; overflow: auto; }
+  mark { border-radius: 3px; padding: 0 1px; color: inherit; cursor: help; }
+  mark.error { background: var(--error-bg); box-shadow: inset 0 -2px var(--error); }
+  mark.warning { background: var(--warning-bg); box-shadow: inset 0 -2px var(--warning); }
+  mark.info { background: var(--info-bg); box-shadow: inset 0 -2px var(--info); }
+  .score { display: flex; align-items: center; gap: 16px; margin: 20px 0 12px; flex-wrap: wrap; }
+  .gauge { flex: 1; min-width: 200px; height: 10px; border-radius: 99px; background: var(--border); overflow: hidden; }
+  .gauge div { height: 100%; width: 0; background: var(--ok); transition: width .25s, background .25s; }
+  .score b { font-size: 32px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .score small { color: var(--muted); }
+  ul.issues { list-style: none; padding: 0; margin: 0; border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); }
+  ul.issues li { display: grid; grid-template-columns: 70px 1fr; gap: 4px 12px; padding: 10px 14px; border-top: 1px solid var(--border); font-size: 14px; }
+  ul.issues li:first-child { border-top: 0; }
+  .sev { font-weight: 600; font-size: 12px; text-transform: uppercase; }
+  .sev.error { color: var(--error); } .sev.warning { color: var(--warning); } .sev.info { color: var(--info); }
+  .quote { font-family: var(--mono); }
+  .fixnote { color: var(--ok); font-family: var(--mono); }
+  .meta { color: var(--muted); grid-column: 2; }
+  .empty { padding: 18px; color: var(--ok); }
+  .install { margin-top: 32px; padding: 16px; border: 1px dashed var(--border); border-radius: var(--radius); font-size: 14px; }
+  .install code { font-family: var(--mono); background: var(--panel); border: 1px solid var(--border); padding: 2px 6px; border-radius: 6px; }
+  footer { margin-top: 24px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>slop<span>fix</span></h1>
+    <a href="https://github.com/Zwarmex/slopfix">GitHub</a>
+    <a href="https://www.npmjs.com/package/slopfix">npm</a>
+  </header>
+  <p class="tagline">Paste a post, a README or an email. slopfix shows the tells that make text read as machine written, and fixes the safe ones. English and French. Everything runs in your browser.</p>
+
+  <div class="toolbar">
+    <button id="sample-en">Sample (EN)</button>
+    <button id="sample-fr">Exemple (FR)</button>
+    <button id="clear">Clear</button>
+    <span class="spacer"></span>
+    <select id="lang" aria-label="Language">
+      <option value="auto">Auto language</option>
+      <option value="en">English</option>
+      <option value="fr">Français</option>
+      <option value="all">All rules</option>
+    </select>
+    <button id="copy">Copy text</button>
+    <button id="fix" class="primary">Fix all</button>
+  </div>
+
+  <div class="grid">
+    <section class="panel">
+      <h2>Your text</h2>
+      <textarea id="input" spellcheck="false" placeholder="Paste text here"></textarea>
+    </section>
+    <section class="panel">
+      <h2>Tells</h2>
+      <div id="preview" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <div class="score">
+    <div><b id="score">0</b><small>/100 slop score</small></div>
+    <div class="gauge"><div id="gauge"></div></div>
+    <small id="summary"></small>
+  </div>
+
+  <ul class="issues" id="issues"></ul>
+
+  <div class="install">
+    Use it in your terminal: <code>npx slopfix README.md --fix</code> &nbsp; or in CI with the GitHub Action <code>Zwarmex/slopfix@v0</code>.
+  </div>
+  <footer>MIT licensed. Nothing you paste leaves this page.</footer>
+</div>
+
+<script type="module">
+  import { lint, fix } from '../src/index.js';
+
+  const D = '\u2014';
+  const SAMPLES = {
+    en: `Certainly! Here's a comprehensive overview of our new app.\n\nIn today's fast-paced world, teams need tools that just work. It's important to note that FlowSync is not just another productivity app, it's a complete rethink of how teams collaborate.\n\nBuilt on a robust architecture ${D} and designed with meticulous attention to detail ${D} FlowSync lets you delve into your data and utilize every insight.\n\n- \u{1F680} **Speed:** Seamlessly syncs in real time.\n- \u{1F512} **Security:** Enterprise-grade protection.\n- \u{1F4A1} **Insights:** Unlock the full potential of your team.\n\nIn conclusion, FlowSync stands as a testament to modern software. I hope this helps!`,
+    fr: `Bien sûr ! Voici un aperçu complet de notre nouvelle application.\n\nDans un monde en constante évolution, les équipes ont besoin d'outils fiables. Il est important de noter que FlowSync n'est pas une simple application, c'est une véritable révolution.\n\nPensé comme un outil incontournable ${D} et conçu avec soin ${D} FlowSync joue un rôle crucial dans votre productivité. Que vous soyez développeur ou fondateur, FlowSync change la donne.\n\nEn conclusion, FlowSync s'avère être la pierre angulaire de votre stack. J'espère que cela vous aide !`,
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const input = $('input');
+  const lang = $('lang');
+
+  const esc = (s) => s.replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]);
+
+  function render() {
+    const text = input.value;
+    const result = lint(text, { lang: lang.value });
+
+    let html = '';
+    let pos = 0;
+    for (const i of result.issues) {
+      if (i.index < pos) continue;
+      html += esc(text.slice(pos, i.index));
+      const title = `${i.severity}: ${i.message} (${i.ruleId})`;
+      html += `<mark class="${i.severity}" title="${esc(title)}">${esc(text.slice(i.index, i.index + i.length))}</mark>`;
+      pos = i.index + i.length;
+    }
+    html += esc(text.slice(pos));
+    $('preview').innerHTML = html || '<span style="color:var(--muted)">Highlights show up here.</span>';
+
+    const color = result.score < 10 ? 'var(--ok)' : result.score < 30 ? 'var(--warning)' : 'var(--error)';
+    $('score').textContent = result.score;
+    $('gauge').style.width = `${Math.max(2, result.score)}%`;
+    $('gauge').style.background = color;
+    const fixable = result.issues.filter((i) => i.fix).length;
+    $('summary').textContent = text.trim()
+      ? `${result.label} · ${result.issues.length} tells · ${fixable} fixable · ${result.language} · ${result.words} words`
+      : '';
+
+    const list = $('issues');
+    if (!text.trim()) {
+      list.innerHTML = '';
+    } else if (result.issues.length === 0) {
+      list.innerHTML = '<li class="empty">No AI writing tells found.</li>';
+    } else {
+      list.innerHTML = result.issues
+        .map((i) => {
+          const fixText = i.fix ? ` <span class="fixnote">→ ${esc(i.fix.label || `"${i.fix.text.trim() || i.fix.text}"`)}</span>` : '';
+          return `<li><span class="sev ${i.severity}">${i.severity}</span><span><span class="quote">${esc(i.quote)}</span>${fixText}</span><span class="meta">${i.line}:${i.column} · ${esc(i.message)} · ${i.ruleId}</span></li>`;
+        })
+        .join('');
+    }
+    try { localStorage.setItem('slopfix:text', text); } catch {}
+  }
+
+  $('sample-en').onclick = () => { input.value = SAMPLES.en; render(); };
+  $('sample-fr').onclick = () => { input.value = SAMPLES.fr; render(); };
+  $('clear').onclick = () => { input.value = ''; render(); input.focus(); };
+  $('fix').onclick = () => { input.value = fix(input.value, { lang: lang.value }).output; render(); };
+  $('copy').onclick = async () => {
+    try { await navigator.clipboard.writeText(input.value); $('copy').textContent = 'Copied'; } catch { input.select(); }
+    setTimeout(() => ($('copy').textContent = 'Copy text'), 1200);
+  };
+  input.addEventListener('input', render);
+  lang.addEventListener('change', render);
+
+  let saved = null;
+  try { saved = localStorage.getItem('slopfix:text'); } catch {}
+  input.value = saved || SAMPLES.en;
+  render();
+</script>
+</body>
+</html>
