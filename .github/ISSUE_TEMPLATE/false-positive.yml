@@ -1,0 +1,29 @@
+name: False positive or bad fix
+description: slopfix flagged normal writing, or --fix changed the meaning.
+labels: [false-positive]
+body:
+  - type: textarea
+    id: input
+    attributes:
+      label: Input text
+      render: markdown
+    validations:
+      required: true
+  - type: input
+    id: rule
+    attributes:
+      label: Rule id
+      placeholder: en/ai-vocabulary
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: slopfix version
+      placeholder: "0.1.0"

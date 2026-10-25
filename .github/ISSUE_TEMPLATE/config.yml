@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Try the playground
+    url: https://zwarmex.github.io/slopfix/
+    about: Paste your text and see what slopfix reports before opening an issue.

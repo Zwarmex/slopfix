@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "test": "node --test",
-    "lint:docs": "node bin/slopfix.js README.md README.fr.md CONTRIBUTING.md",
+    "lint:docs": "node bin/slopfix.js README.md README.fr.md CONTRIBUTING.md CHANGELOG.md skill/SKILL.md",
     "demo": "node examples/make-examples.js && node bin/slopfix.js examples"
   },
   "keywords": [
